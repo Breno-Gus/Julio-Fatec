@@ -24,6 +24,12 @@ class ProdutoDAO extends BaseDAO
         return false;
     }
 
+    public function buscarPorId($id)
+    {
+        $resultado = $this->select("SELECT * FROM produto WHERE id = {$id}");
+        return $resultado->fetchObject(Produto::class);
+    }
+
     public  function salvar(Produto $produto) 
     {
         try {
