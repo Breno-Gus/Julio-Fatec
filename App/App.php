@@ -34,7 +34,7 @@ class App
         define('DB_HOST'        , "localhost");
         define('DB_USER'        , "root"); //Usuário de acesso ao MySQL
         define('DB_PASSWORD'    , "");  //Senha de acesso ao MySQL
-        define('DB_NAME'        , "crudproduto");  //Nome do Banco no MySQL
+        define('DB_NAME'        , "CrudProdutoMVC");  //Nome do Banco no MySQL
         define('DB_DRIVER'      , "mysql");  //Usado pelo PDO
 
         $this->url();
