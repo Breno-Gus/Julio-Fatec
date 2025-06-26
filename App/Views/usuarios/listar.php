@@ -3,7 +3,6 @@
         <h1 class="mt-5">Listagem de Usuarios</h1>
         
         <?php
-
         //Mensagens de Erro ou Sucesso na execução das funções
         echo $Sessao::retornaMensagem();
         $Sessao::limpaMensagem();
@@ -21,11 +20,11 @@
           echo ' </tr>';
           echo ' </thead>';
           echo ' <tbody>';
-          foreach ($viewVar['listaUsuarios'] as $objProduto) {
-            $id = $objProduto->getId();
-            $nome = $objProduto->getNome();
-            $email = $objProduto->getEmail();
-            $permissao = $objProduto->getPermissao();
+          foreach ($viewVar['listaUsuarios'] as $objUsuario) {
+            $id = $objUsuario->getLogin();
+            $nome = $objUsuario->getNome();
+            $email = $objUsuario->getEmail();
+            $permissao = $objUsuario->getPermissao();
                                 
             echo '<tr>';
             echo ' <td>'.$id.'</td>';

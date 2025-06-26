@@ -10,7 +10,7 @@ class UsuarioDAO extends BaseDAO
     {
         if($id) {
             $resultado = $this->select(
-                "SELECT * FROM usuario WHERE id = {$id}"
+                "SELECT * FROM usuario WHERE login = '{$id}'"
             );
 
             return $resultado->fetchObject(Usuario::class);
@@ -22,6 +22,12 @@ class UsuarioDAO extends BaseDAO
         }
 
         return false;
+    }
+
+    public function buscarPorLogin($id)
+    {
+        $resultado = $this->select("SELECT * FROM usuario WHERE login = '{$id}'");
+        return $resultado->fetchObject(Usuario::class);
     }
 
     public  function salvar(Usuario $usuario) 
@@ -53,23 +59,21 @@ class UsuarioDAO extends BaseDAO
     {
         try {
 
-            $id             = $usuario->getId();
+            $id             = $usuario->getLogin();
             $nome           = $usuario->getNome();
-            $senha          = $usuario->getSenha();
             $email          = $usuario->getEmail();
             $permissao      = $usuario->getPermissao();
 
             return $this->update(
                 'usuario',
-                "nome = :nome, preco = :preco, quantidade = :quantidade, descricao = :descricao",
+                "nome = :nome, email = :email, permissao = :permissao",
                 [
-                    ':id'=>$id,
+                    ':login'=>$id,
                     ':nome'=>$nome,
-                    ':senha'=>$senha,
                     ':email'=>$email,
                     ':permissao'=>$permissao
                 ],
-                "id = :id"
+                "login = :id"
             );
 
         }catch (\Exception $e){
@@ -80,7 +84,7 @@ class UsuarioDAO extends BaseDAO
     public function excluir(Usuario $usuario)
     {
         try {
-            $id = $usuario->getId();
+            $id = $usuario->getLogin();
 
             return $this->delete('usuario',"id = $id");
 

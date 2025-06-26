@@ -13,7 +13,7 @@ class UsuarioController extends Controller
     {
         $usuarioDAO = new UsuarioDAO();  
         self::setViewParam('listaUsuarios', $usuarioDAO->listar()); // Busca todos os usuários
-        $this->render('/usuario/listar'); 
+        $this->render('/usuarios/listar'); 
         Sessao::limpaMensagem();
     }
 
@@ -21,16 +21,16 @@ class UsuarioController extends Controller
     {
         $id = $params[0];
         $usuarioDAO = new UsuarioDAO();
-        $usuario = $usuarioDAO->buscarPorId($id); // Nome mais claro
+        $usuario = $usuarioDAO->buscarPorLogin($id); // Nome mais claro
 
         if ($usuario === null) {
             Sessao::gravaMensagem('<div class="alert alert-danger" role="alert">Usuário com ID '.$id.' não encontrado.</div>');
-            $this->redirect('/usuario/listar');
+            $this->redirect('/usuarios/listar');
             return;
         }
 
-        self::setViewParam('usuario', $usuario);
-        $this->render('/usuario/editar');
+        self::setViewParam('usuarios', $usuario);
+        $this->render('/usuarios/editar');
         Sessao::limpaMensagem();      
     }
 
@@ -57,11 +57,11 @@ class UsuarioController extends Controller
         }
 
         if ($erroValidacao) {
-            self::setViewParam('usuario', $usuario);
+            self::setViewParam('usuarios', $usuario);
             if ($cmd === 'editar') {
-                $this->render('/usuario/editar');
+                $this->render('/usuarios/editar');
             } elseif ($cmd === 'novo') {
-                $this->render('/usuario/cadastrar');
+                $this->render('/usuarios/cadastrar');
             }
             return;
         }
@@ -82,7 +82,7 @@ class UsuarioController extends Controller
         }
 
         Sessao::limpaErro();
-        $this->redirect('/usuario/listar');      
+        $this->redirect('/usuarios/listar');      
     }
 
     public function excluirConfirma($param)
@@ -93,12 +93,12 @@ class UsuarioController extends Controller
 
         if ($usuario === null) {
             Sessao::gravaMensagem('<div class="alert alert-danger" role="alert">Usuário com ID '.$id.' não encontrado.</div>');
-            $this->redirect('/usuario/listar');
+            $this->redirect('/usuarios/listar');
             return;
         }
 
         self::setViewParam('usuario', $usuario);
-        $this->render('/usuario/excluirConfirma');
+        $this->render('/usuarios/excluirConfirma');
     }
 
     public function excluir($param)
@@ -114,12 +114,12 @@ class UsuarioController extends Controller
             Sessao::gravaMensagem('<div class="alert alert-success" role="alert">Usuário excluído com sucesso.</div>');
         }
 
-        $this->redirect('/usuario/listar');  
+        $this->redirect('/usuarios/listar');  
     }
 
     public function cadastrar()
     {
-        $this->render('/usuario/cadastrar');
+        $this->render('/usuarios/cadastrar');
         Sessao::limpaMensagem();
         Sessao::limpaErro();
     }

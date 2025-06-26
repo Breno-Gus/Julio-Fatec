@@ -11,29 +11,22 @@
       
         ?>
         
-        <form action="<?php echo 'http://'.APP_HOST.'/produto/salvar/editar';?>" method="post" id="formEditarProduto">
+        <form action="<?php echo 'http://'.APP_HOST.'/usuarios/salvar/editar';?>" method="post" id="formEditarProduto">
           <div class="form-group">
-              <input type="hidden" name="id" value="<?php echo $viewVar['produto']->getId();?>">
+              <input type="hidden" name="id" value="<?php echo $viewVar['usuario']->getLogin();?>">
           </div>
           <div class="form-group">
-            <label for="nome">Nome do Produto</label>
-            <input type="text" class="form-control" name="nome" value="<?php echo $viewVar['produto']->getNome(); ?>" required>
-          </div>
-          <div class="form-group">
-            <label for="permissao">Descrição</label>
-            <textarea class="form-control" name="permissao"><?php echo $viewVar['produto']->getPermissao(); ?>
-            </textarea>
-          </div>
-          <div class="form-group">
-            <label for="senha">Preço</label>
-            R$ <input type="text" class="form-control <?php if ($Sessao::retornaErro('errosenha')!="") echo "is-invalid"; ?>" name="senha" value="<?php echo $viewVar['produto']->getSenha();?>">
-            <div class="invalid-feedback">
-              <?php echo $Sessao::retornaErro('errosenha'); $Sessao::limpaErro(); ?>
-            </div>
+            <label for="nome">Nome do Usuario</label>
+            <input type="text" class="form-control" name="nome" value="<?php echo $viewVar['usuario']->getNome(); ?>" required>
           </div>
           <div class="form-group">
             <label for="email">Email</label>
-            <input type="number" class="form-control" name="email" value="<?php echo $viewVar['produto']->getEmail();?>" required>
+            <input type="email" class="form-control" name="email" value="<?php echo $viewVar['usuario']->getEmail(); ?>" required>
+          </div>
+          <div class="form-group">
+            <label for="permissao">Permissao</label>
+            <input type="text" class="form-control" name="permissao" value="<?php echo $viewVar['usuario']->getPermissao(); ?>" required>
+            </div>
           </div>
           <button type="submit" class="btn btn-success btn-sm">Salvar</button>
         </form>

@@ -2,34 +2,31 @@
 
 namespace App\Models\Entidades;
 
-use DateTime;
-
 class Usuario
 {
-    private $id;
+    private $login;
     private $nome;
     private $senha;
     private $email;
-    private $descricao;
-    private $dataCadastro;
+    private $permissao;
 
     public function setUsuario($dados) {
-      if (isset($dados['id'])) { $this->id = $dados['id'];}
+      if (isset($dados['login'])) { $this->id = $dados['login'];}
       $this->nome = $dados['nome'];
       $this->senha = $dados['senha'];
       $this->email = $dados['email'];
-      $this->permissao= $dados['descricao'];
+      $this->permissao= $dados['permissao'];
     }
 
     
-    public function getId()
+    public function getLogin()
     {
-        return $this->id;
+        return $this->login;
     }
 
-    public function setId($id)
+    public function setLogin($login)
     {
-        $this->id = $id;
+        $this->login = $login;
     }
 
     public function getNome()
@@ -62,24 +59,14 @@ class Usuario
         $this->email = $email;
     }
 
-    public function getDescricao()
+    public function getPermissao()
     {
-        return $this->descricao;
+        return $this->permissao;
     }
 
-    public function setDescricao($descricao)
+    public function setPermissao($permissao)
     {
-        $this->permissao= $descricao;
-    }
-
-    public function getDataCadastro()
-    {
-        return new DateTime($this->dataCadastro);
-    }
-
-    public function setDataCadastro($dataCadastro)
-    {
-        $this->dataCadastro = $dataCadastro;
+        $this->permissao= $permissao;
     }
 
 }
