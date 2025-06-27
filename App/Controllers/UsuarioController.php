@@ -89,7 +89,7 @@ class UsuarioController extends Controller
     {
         $id = $param[0];
         $usuarioDAO = new UsuarioDAO();
-        $usuario = $usuarioDAO->buscarPorId($id);
+        $usuario = $usuarioDAO->buscarPorLogin($id);
 
         if ($usuario === null) {
             Sessao::gravaMensagem('<div class="alert alert-danger" role="alert">Usuário com ID '.$id.' não encontrado.</div>');
@@ -104,7 +104,7 @@ class UsuarioController extends Controller
     public function excluir($param)
     {
         $usuario = new Usuario();
-        $usuario->setId(Util::sanitizar($_POST['id']));
+        $usuario->setLogin(Util::sanitizar($_POST['id']));
 
         $usuarioDAO = new UsuarioDAO();
 
