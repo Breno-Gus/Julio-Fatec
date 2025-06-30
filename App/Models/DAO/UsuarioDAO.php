@@ -86,7 +86,7 @@ class UsuarioDAO extends BaseDAO
         try {
             $id = $usuario->getLogin();
 
-            return $this->delete('usuario',"id = $id");
+            return $this->delete('usuario',"login = $id");
 
         }catch (Exception $e){
 
