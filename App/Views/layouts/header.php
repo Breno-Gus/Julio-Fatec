@@ -37,11 +37,11 @@
             </li>
 
 
-             <li class="nav-item <?php if(($viewVar['nameController'] == "UsuariosController") AND ($viewVar['nameAction'] == "listar")){ ?> active <?php } ?>">
-                <a class="nav-link" href="http://<?php echo APP_HOST."/usuario/listar"; ?>">Usuários</a>
+            <li class="nav-item <?php if($viewVar['nameController'] == "UsuarioController") { ?> active <?php } ?>">
+                <a class="nav-link" href="http://<?php echo APP_HOST."/usuario/listar"; ?>">Listar Usuários</a>
             </li>
-            <li class="nav-item <?php if(($viewVar['nameController'] == "UsuariosController") AND ($viewVar['nameAction'] == "cadastrar")){ ?> active <?php } ?>">
-                <a class="nav-link" href="http://<?php echo APP_HOST."/usuario/cadastrar"; ?>">Cadastrar Usuario</a>
+            <li class="nav-item <?php if(($viewVar['nameController'] == "UsuarioController") AND ($viewVar['nameAction'] == "cadastrar")){ ?> active <?php } ?>">
+                <a class="nav-link" href="http://<?php echo APP_HOST."/usuario/cadastrar"; ?>">Cadastrar Usuário</a>
             </li>
 
           </ul>

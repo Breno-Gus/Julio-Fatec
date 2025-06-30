@@ -9,107 +9,102 @@ use App\Lib\Util;
 
 class ProdutoController extends Controller
 {
-    public function listar()
+  public function listar()
     {
-        $produtoDAO = new ProdutoDAO();
-        self::setViewParam('listaProdutos', $produtoDAO->listar());
-        $this->render('/produto/listar');
-        Sessao::limpaMensagem();
+      $produtoDAO = new ProdutoDAO();  
+      self::setViewParam('listaProdutos',$produtoDAO->listar());
+      $this->render('/produto/listar'); 
+      Sessao::limpaMensagem();
     }
-
+    
     public function editar($params)
     {
-        $id = $params[0];
-        $produtoDAO = new ProdutoDAO();
-        $produto = $produtoDAO->buscarPorId($id);
+      $id = $params[0]; 
+      $produtoDAO = new ProdutoDAO();
+      $objProduto = $produtoDAO->listar($id);
 
-        if ($produto === null) {
-            Sessao::gravaMensagem('<div class="alert alert-danger" role="alert">Produto com ID '.$id.' não encontrado.</div>');
-            $this->redirect('/produto/listar');
-            return;
-        }
+      if ($objProduto == null) 
+      {
+        Sessao::gravaMensagem('<div class="alert alert-danger" role="alert">Falha ao recuperar dados do produto id='.$id.'</div>');
+        $this->redirect('/produto/listar');
+      }
+            
+      self::setViewParam('produto',$objProduto);
+      $this->render('/produto/editar');
 
-        self::setViewParam('produto', $produto);
-        $this->render('/produto/editar');
-        Sessao::limpaMensagem();      
+      Sessao::limpaMensagem();  
     }
 
-    public function salvar($param)
-    {
-        $cmd = $param[0];
-        $dadosForm = Util::sanitizar($_POST);
+    public function salvar($param) {
+      $cmd = $param[0];
+      $dadosform = Util::sanitizar($_POST);
+      $objproduto = new Produto();
+      $objproduto->setProduto($dadosform);
+      
+      $errovalidacao = false;
+      if (empty($dadosform['preco'])) {
+        Sessao::gravaMensagem('<div class="alert alert-danger" role="alert">Verifique os Campos em Vermelho.</div>');
+        Sessao::gravaErro('erropreco','Este campo deve ser preemchido');
+        $errovalidacao = true;
+      }
 
-        $produto = new Produto();
-        $produto->setProduto($dadosForm);
-
-        $erroValidacao = false;
-
-        // Validação básica
-        if (empty($dadosForm['nome'])) {
-            Sessao::gravaErro('erronome', 'O campo nome é obrigatório.');
-            $erroValidacao = true;
+      if ($errovalidacao) { 
+        self::setViewParam('produto',$objproduto);
+        if ($cmd == 'editar'){ 
+          $this->render('/produto/editar');
+        }elseif ($cmd == 'novo'){ 
+          $this->render('/produto/cadastrar');
         }
-
-        if (!is_numeric($dadosForm['preco']) || $dadosForm['preco'] <= 0) {
-            Sessao::gravaErro('erropreco', 'Informe um preço válido.');
-            $erroValidacao = true;
-        }
-
-        if (!isset($dadosForm['quantidade']) || !is_numeric($dadosForm['quantidade'])) {
-            Sessao::gravaErro('erroquantidade', 'Informe uma quantidade válida.');
-            $erroValidacao = true;
-        }
-
-        if ($erroValidacao) {
-            Sessao::gravaMensagem('<div class="alert alert-danger" role="alert">Verifique os campos destacados.</div>');
-            self::setViewParam('produto', $produto);
-            $this->render($cmd === 'editar' ? '/produto/editar' : '/produto/cadastrar');
-            return;
-        }
-
-        $produtoDAO = new ProdutoDAO();
-
-        if ($cmd === 'editar') {
-            $produtoDAO->atualizar($produto);
-            Sessao::gravaMensagem('<div class="alert alert-success" role="alert">Produto atualizado com sucesso.</div>');
-        } elseif ($cmd === 'novo') {
-            $produtoDAO->salvar($produto);
-            Sessao::gravaMensagem('<div class="alert alert-success" role="alert">Novo produto cadastrado com sucesso.</div>');
-        }
-
-        Sessao::limpaErro();
-        $this->redirect('/produto/listar');      
+        return;
+      }
+        
+      $produtoDAO = new ProdutoDAO(); 
+      
+      if ($cmd == 'editar'){ 
+        $produtoDAO->atualizar($objproduto);
+        Sessao::gravaMensagem('<div class="alert alert-success" role="alert">Produto atualizado com sucesso.</div>');
+      }elseif ($cmd == 'novo'){ 
+        $produtoDAO->salvar($objproduto);
+        Sessao::gravaMensagem('<div class="alert alert-success" role="alert">Novo Produto gravado com sucesso.</div>');
+      }
+      
+      Sessao::limpaErro();
+      $this->redirect('/produto/listar');      
     }
-
+    
     public function excluirConfirma($param)
     {
-        $id = $param[0];
-        $produtoDAO = new ProdutoDAO();
-        $produto = $produtoDAO->buscarPorId($id);
+      $id = $param[0];
+      
+      $produtoDAO = new ProdutoDAO();
 
-        if ($produto === null) {
-            Sessao::gravaMensagem('<div class="alert alert-danger" role="alert">Produto com ID '.$id.' não encontrado.</div>');
-            $this->redirect('/produto/listar');
-            return;
-        }
+      $objProduto = $produtoDAO->listar($id);
 
-        self::setViewParam('produto', $produto);
-        $this->render('/produto/excluirConfirma');
+      if ($objProduto==null) 
+      {
+        Sessao::gravaMensagem('<div class="alert alert-danger" role="alert">Falha ao recuperar dados do produto id='.$id.'</div>');
+        $this->redirect('/produto/listar');
+      }
+            
+      self::setViewParam('produto',$objProduto);
+      
+      $this->render('/produto/excluirConfirma');
     }
-
+    
     public function excluir($param)
     {
-        $produto = new Produto();
-        $produto->setId(Util::sanitizar($_POST['id']));
-        $produtoDAO = new ProdutoDAO();
+      $objproduto = new Produto();
+      //Pega o id do produto a ser excluído
+      $objproduto->setId(Util::sanitizar($_POST['id']));
+      
+      $produtoDAO = new ProdutoDAO();
 
-        if (!$produtoDAO->excluir($produto)) {
-            Sessao::gravaMensagem('<div class="alert alert-danger" role="alert">Produto não encontrado ou não pôde ser excluído.</div>');
-        } else {
-            Sessao::gravaMensagem('<div class="alert alert-success" role="alert">Produto excluído com sucesso!</div>');
-        }
-
-        $this->redirect('/produto/listar');  
+      if(!$produtoDAO->excluir($objproduto)){
+        Sessao::gravaMensagem('<div class="alert alert-danger" role="alert">Produto Não Encontrado.</div>');
+      }else{
+        Sessao::gravaMensagem('<div class="alert alert-success" role="alert">Produto excluído com sucesso!.</div>');
+      }
+      $this->redirect('/produto/listar');  
     }
 
     public function cadastrar()
