@@ -78,16 +78,15 @@ class UsuarioDAO extends BaseDAO
         }
     }
 
-    public function excluir(Usuario $usuario)
-    {
-        try {
-            $login = $usuario->getLogin();
+public function excluir(Usuario $usuario)
+{
+    try {
+        $login = $usuario->getLogin();
 
-            return $this->delete('usuario',"login = $usuario");
+        return $this->delete('usuario', "login = '$login'");
 
-        }catch (Exception $e){
-
-            throw new \Exception("Erro ao deletar", 500);
-        }
+    } catch (Exception $e) {
+        throw new \Exception("Erro ao deletar", 500);
     }
+}
 }
