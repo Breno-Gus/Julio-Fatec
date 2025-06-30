@@ -23,19 +23,17 @@ class App
     private $params;
     public  $controllerName;
 
-    public function __construct()
+     public function __construct() //Constantes da Aplicação
     {
-        /*
-         * Constantes da Aplicação
-         */
         define('APP_HOST'       , $_SERVER['HTTP_HOST'] . "/CRUD-ProdutoMVC");
         define('PATH'           , realpath('./'));
-        define('TITLE'          , "CRUD-Produto em PHP usando MVC e OO");
+        define('TITLE'          , "CRUD Produto em PHP usando MVC e OO");
         define('DB_HOST'        , "localhost");
-        define('DB_USER'        , "root"); //Usuário de acesso ao MySQL
-        define('DB_PASSWORD'    , "");  //Senha de acesso ao MySQL
-        define('DB_NAME'        , "CrudProdutoMVC");  //Nome do Banco no MySQL
-        define('DB_DRIVER'      , "mysql");  //Usado pelo PDO
+        define('DB_USER'        , "root"); 
+        define('DB_PASSWORD'    , "");  
+        define('DB_NAME'        , "crudproduto");  
+        define('DB_DRIVER'      , "mysql");  
+        define('COMPONENTS'     , "Breno Gustava & Vinicius Duarte");
 
         $this->url();
     }
@@ -65,34 +63,29 @@ class App
             $this->controller = new HomeController($this);
             $this->controller->index();
         }
-
-        //Se a URL amigável contém o Controller e o Action, então carrega-os a partir daqui
         
-        //Verifica se o arquivo da classe do Controller existe
-        if (!file_exists(PATH . '/App/Controllers/' . $this->controllerFile)) {
+        if (!file_exists(PATH . '/App/Controllers/' . $this->controllerFile)) { //Verificação do arquivo class controle
             throw new Exception("Página não encontrada.", 404);
         }
 
-        //Instancia o Controller
-        $nomeClasse     = "\\App\\Controllers\\" . $this->controllerName;
+        $nomeClasse     = "\\App\\Controllers\\" . $this->controllerName; //Instanciar Controller
         $objetoController = new $nomeClasse($this);
 
         if (!class_exists($nomeClasse)) {
             throw new Exception("Erro na aplicação", 500);
         }
         
-        //Chama o método relacionado com a Action
         if (isset($this->action) AND method_exists($objetoController, $this->action)) {
             $objetoController->{$this->action}($this->params);
             return;
         } else if (!$this->action && method_exists($objetoController, 'index')) {
             $objetoController->index($this->params);
             return;
-        } else {  //ou gera um erro 500 (exception) se não existe o método solicitado
+        } else {  //gera um erro 500
             throw new Exception("Nosso suporte já esta verificando desculpe!", 500);
         }
         
-        //Se chegar até aqui é porque não conseguiu carregar nada, então gera um erro 404
+        //erro 404
         throw new Exception("Página não encontrada.", 404);
     }
 
@@ -148,5 +141,3 @@ class App
         return null;
     }
 }
-
-?>

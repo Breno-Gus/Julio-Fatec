@@ -13,7 +13,7 @@ abstract class BaseDAO
         $this->conexao = Conexao::getConnection();
     }
 
-    public function select($sql, $params = []) 
+    public function select($sql, $params = [])
     {
         if (!empty($sql)) {
             $stmt = $this->conexao->prepare($sql);
@@ -23,24 +23,31 @@ abstract class BaseDAO
         return false;
     }
 
+
     public function insert($table, $cols, $values) 
     {
-        if (!empty($table) && !empty($cols) && !empty($values)) {
-            $parametros = $cols;
-            $colunas = str_replace(":", "", $cols);
-
+        if(!empty($table) && !empty($cols) && !empty($values))
+        {
+            $parametros    = $cols;
+            $colunas       = str_replace(":", "", $cols);
+            
+            //             $table   $colunas             $cols
+            //INSERT INTO usuario (nome,email) VALUES (:nome,:email);
             $stmt = $this->conexao->prepare("INSERT INTO $table ($colunas) VALUES ($parametros)");
             $stmt->execute($values);
 
             return $stmt->rowCount();
+        }else{
+            return false;
         }
-        return false;
     }
 
-    public function update($table, $cols, $values, $where = null) 
+    public function update($table, $cols, $values, $where=null) 
     {
-        if (!empty($table) && !empty($cols) && !empty($values)) {
-            if ($where) {
+        if(!empty($table) && !empty($cols) && !empty($values))
+        {
+            if($where)
+            {
                 $where = " WHERE $where ";
             }
 
@@ -48,11 +55,12 @@ abstract class BaseDAO
             $stmt->execute($values);
 
             return $stmt->rowCount();
+        }else{
+            return false;
         }
-        return false;
     }
-
-    public function delete($table, $where = null) 
+    
+    public function delete($table, $where = null, $params = [])
     {
         if (!empty($table)) {
             if ($where) {
@@ -60,10 +68,11 @@ abstract class BaseDAO
             }
 
             $stmt = $this->conexao->prepare("DELETE FROM $table $where");
-            $stmt->execute();
+            $stmt->execute($params);
 
             return $stmt->rowCount();
+        } else {
+            return false;
         }
-        return false;
     }
 }

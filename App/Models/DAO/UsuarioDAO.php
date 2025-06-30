@@ -1,16 +1,15 @@
 <?php
-
 namespace App\Models\DAO;
 
 use App\Models\Entidades\Usuario;
 
 class UsuarioDAO extends BaseDAO
 {
-    public  function listar($id = null)
+    public  function listar($login = null)
     {
-        if($id) {
+        if($login) {
             $resultado = $this->select(
-                "SELECT * FROM usuario WHERE login = '{$id}'"
+                "SELECT * FROM usuario WHERE login = :login", [':login' => $login]
             );
 
             return $resultado->fetchObject(Usuario::class);
@@ -24,16 +23,11 @@ class UsuarioDAO extends BaseDAO
         return false;
     }
 
-    public function buscarPorLogin($id)
-    {
-        $resultado = $this->select("SELECT * FROM usuario WHERE login = '{$id}'");
-        return $resultado->fetchObject(Usuario::class);
-    }
-
     public  function salvar(Usuario $usuario) 
     {
         try {
 
+            $login          = $usuario->getLogin();
             $nome           = $usuario->getNome();
             $senha          = $usuario->getSenha();
             $email          = $usuario->getEmail();
@@ -41,8 +35,9 @@ class UsuarioDAO extends BaseDAO
 
             return $this->insert(
                 'usuario',
-                ":nome,:senha,:email,:permissao",
+                ":login,:nome,:senha,:email,:permissao",
                 [
+                    ':login'=>$login,
                     ':nome'=>$nome,
                     ':senha'=>$senha,
                     ':email'=>$email,
@@ -59,21 +54,23 @@ class UsuarioDAO extends BaseDAO
     {
         try {
 
-            $id             = $usuario->getLogin();
+            $login          = $usuario->getLogin();
             $nome           = $usuario->getNome();
+            $senha          = $usuario->getSenha();
             $email          = $usuario->getEmail();
             $permissao      = $usuario->getPermissao();
 
             return $this->update(
                 'usuario',
-                "nome = :nome, email = :email, permissao = :permissao",
+                "nome = :nome, senha = :senha, email = :email, permissao = :permissao",
                 [
-                    ':login'=>$id,
+                    ':login' => $login,
                     ':nome'=>$nome,
+                    ':senha'=>$senha,
                     ':email'=>$email,
                     ':permissao'=>$permissao
                 ],
-                "login = :id"
+                "login = :login"
             );
 
         }catch (\Exception $e){
@@ -84,9 +81,9 @@ class UsuarioDAO extends BaseDAO
     public function excluir(Usuario $usuario)
     {
         try {
-            $id = $usuario->getLogin();
+            $login = $usuario->getLogin();
 
-            return $this->delete('usuario',"login = $id");
+            return $this->delete('usuario',"login = $usuario");
 
         }catch (Exception $e){
 
@@ -94,4 +91,3 @@ class UsuarioDAO extends BaseDAO
         }
     }
 }
-
